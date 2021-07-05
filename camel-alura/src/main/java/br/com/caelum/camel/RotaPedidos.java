@@ -12,11 +12,15 @@ public class RotaPedidos {
 		context.addRoutes(new RouteBuilder() {
 			@Override
 			public void configure() throws Exception {
+
 				from("file:D:\\projeto-camel\\camel-alura\\pedidos?delay=5s&noop=true")
-						.log("${id}")
+						.split()
+						.xpath("/pedido/itens/item")
+						.filter()
+						.xpath("/item/formato[text()='EBOOK']")
 						.marshal()
 						.xmljson()
-						.log("${body}")
+						.log("${id} - ${body}")
 						.setHeader("CamelFileName",simple("${file:name.noext}.json"))
 						.to("file:D:\\projeto-camel\\camel-alura\\saida");
 			}
